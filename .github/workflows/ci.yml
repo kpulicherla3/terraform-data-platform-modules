@@ -1,8 +1,13 @@
-name: ci
+name: terraform-ci
 on: [pull_request, push]
 jobs:
-  basic:
+  terraform:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: echo "CI OK"
+      - uses: hashicorp/setup-terraform@v3
+      - run: terraform fmt -check -recursive
+      - run: |
+          cd envs/dev
+          terraform init -backend=false
+          terraform validate
